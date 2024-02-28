@@ -3,3 +3,4 @@ utils/config.ini
 /Python
 functions/kolo_id.session
 identifier.sqlite
+functions/__pycache__/
