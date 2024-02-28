@@ -1,1 +1,5 @@
 /.idea
+utils/config.ini
+/Python
+functions/kolo_id.session
+identifier.sqlite
