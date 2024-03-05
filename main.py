@@ -3,7 +3,10 @@ import asyncio
 import configparser
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums.parse_mode import ParseMode
-from functions.hand_start import start_command
+from functions.hand_start import start
+from functions.hand_search import search
+from functions.hand_help import helper
+from functions.dp_handlers import dp_handlers
 from aiogram.filters.command import Command
 
 
@@ -20,12 +23,17 @@ dp: Dispatcher = Dispatcher(storage=storage)
 
 async def main() -> None:
 
-    dp.message.register(start_command, Command('start'))
+    dp.message.register(start, Command('start'))
+    dp.message.register(search, Command('search'))
+    dp.message.register(helper, Command('help'))
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot, mylist=[1, 2, 3])
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(dp_handlers(dp))
 
     asyncio.run(main())

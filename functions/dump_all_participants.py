@@ -4,6 +4,7 @@ from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.types import ChannelParticipantsSearch
 import json
 
+
 config = configparser.ConfigParser()
 config.read("C:\\Python_Projects\\ReAssembler\\utils\\config.ini")
 
@@ -16,7 +17,9 @@ client = TelegramClient(username, int(api_id), api_hash)
 client.start()
 
 
-async def dump_all_participants(url):
+async def dump_all_participants(message):
+
+    locate = 'C:\\Python_Projects\\ReAssembler\\channel_users.json'
 
     offset_user = 0
     limit_user = 100
@@ -26,7 +29,7 @@ async def dump_all_participants(url):
 
     while True:
 
-        participants = await client(GetParticipantsRequest(url, filter_user, offset_user, limit_user, hash=0))
+        participants = await client(GetParticipantsRequest(message, filter_user, offset_user, limit_user, hash=0))
 
         if not participants.users:
             break
@@ -45,14 +48,6 @@ async def dump_all_participants(url):
                                   "phone": participant.phone,
                                   "is_bot": participant.bot})
 
-    print(all_users_details)
-
-    with open('C:\\Python_Projects\\ReAssembler\\channel_users.json', 'w', encoding='utf8') as outfile:
+    with open(locate, 'w', encoding='utf8') as outfile:
         json.dump(all_users_details, outfile, ensure_ascii=False)
 
-
-channel = client.get_entity('https://t.me/+YNI_GwHOQvwzYmJi')
-
-with client:
-
-    client.loop.run_until_complete(dump_all_participants(channel))
