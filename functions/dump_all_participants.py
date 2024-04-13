@@ -14,8 +14,6 @@ username = config['Telegram']['username']
 
 client = TelegramClient(username, int(api_id), api_hash)
 
-client.start()
-
 
 async def dump_all_participants(message):
 
@@ -27,6 +25,8 @@ async def dump_all_participants(message):
     all_participants = []
     filter_user = ChannelParticipantsSearch('')
 
+    await client.start()
+
     while True:
 
         participants = await client(GetParticipantsRequest(message, filter_user, offset_user, limit_user, hash=0))
@@ -36,6 +36,8 @@ async def dump_all_participants(message):
 
         all_participants.extend(participants.users)
         offset_user += len(participants.users)
+
+    await client.disconnect()
 
     all_users_details = []
 
@@ -50,4 +52,6 @@ async def dump_all_participants(message):
 
     with open(locate, 'w', encoding='utf8') as outfile:
         json.dump(all_users_details, outfile, ensure_ascii=False)
+
+    print('completed dump_all_participants')
 

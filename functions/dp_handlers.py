@@ -63,8 +63,7 @@ async def dp_handlers(dp):
 
         if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(dump_all_participants(message.text))
+            await dump_all_participants(message.text)
 
             await state.clear()
 

@@ -5,3 +5,4 @@ functions/kolo_id.session
 identifier.sqlite
 functions/__pycache__/
 kolo_id.session
+channel_users.json
