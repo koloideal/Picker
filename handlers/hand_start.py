@@ -1,5 +1,5 @@
 from aiogram import types
-from functions.user_to_database import user_to_database
+from utils_func.user_to_database import user_to_database
 
 
 async def start(message: types.Message) -> None:

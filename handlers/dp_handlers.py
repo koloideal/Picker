@@ -1,9 +1,9 @@
-import asyncio
-
 from aiogram import types
 from aiogram.fsm.context import FSMContext
-from functions.hand_search import SearchState
-from functions.dump_all_participants import dump_all_participants
+from handlers.hand_search import SearchState
+from get_data_telegram.get_users_from_groups import get_users_from_groups
+from get_data_telegram.get_users_from_channel import get_users_from_channel
+import os
 
 
 async def dp_handlers(dp):
@@ -14,12 +14,12 @@ async def dp_handlers(dp):
         if action == "get_us_groups":
             await callback.message.answer('Введите ссылку на чат')
 
-            await state.set_state(SearchState.waiting_for_search_participants)
+            await state.set_state(SearchState.waiting_for_search_participants_of_group)
 
         elif action == "get_us_channel":
-            await callback.message.answer('Введите ссылку на чат')
+            await callback.message.answer('Введите ссылку на канал')
 
-            await state.set_state(SearchState.waiting_for_get_messages)
+            await state.set_state(SearchState.waiting_for_search_participants_of_channel)
 
         elif action == "get_inf_but":
 
@@ -58,12 +58,20 @@ async def dp_handlers(dp):
 
             await callback.message.answer('Введите ссылку на чат')
 
-    @dp.message(SearchState.waiting_for_search_participants)
+    @dp.message(SearchState.waiting_for_search_participants_of_group)
     async def get_url_for_users_in_groups(message: types.Message, state: FSMContext):
 
         if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
-            await dump_all_participants(message.text)
+            file_name = await get_users_from_groups(message.text)
+
+            full_file_name = f'users_of_groups_to_json/{file_name}.json'
+
+            document = types.FSInputFile(full_file_name)
+
+            await message.answer_document(document=document)
+
+            os.remove(full_file_name)
 
             await state.clear()
 
@@ -73,9 +81,25 @@ async def dp_handlers(dp):
 
             await state.clear()
 
-    @dp.message(SearchState.waiting_for_get_messages)
-    async def get_url_for_messages_in_groups(message: types.Message, state: FSMContext):
+    @dp.message(SearchState.waiting_for_search_participants_of_channel)
+    async def get_url_for_users_in_channel(message: types.Message, state: FSMContext):
 
-        await message.answer('444' + message.text)
+        if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
-        await state.clear()
+            file_name = await get_users_from_channel(message.text)
+
+            full_file_name = f'users_of_channels_to_json/{file_name}.json'
+
+            document = types.FSInputFile(full_file_name)
+
+            await message.answer_document(document=document)
+
+            os.remove(full_file_name)
+
+            await state.clear()
+
+        else:
+
+            await message.answer('this is not link')
+
+            await state.clear()

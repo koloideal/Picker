@@ -3,22 +3,24 @@ import asyncio
 import configparser
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums.parse_mode import ParseMode
-from functions.hand_start import start
-from functions.hand_search import search
-from functions.hand_help import helper
-from functions.dp_handlers import dp_handlers
+from handlers.hand_start import start
+from handlers.hand_search import search
+from handlers.hand_help import helper
+from handlers.dp_handlers import dp_handlers
 from aiogram.filters.command import Command
-
+import os
 
 config = configparser.ConfigParser()
-config.read('C:\\Python_Projects\\ReAssembler\\utils\\config.ini')
+config.read('secret_data/config.ini')
 
-bot_token = config['Telegram']['bot_token']
+bot_token = config.get('Telegram', 'bot_token')
 
 storage: MemoryStorage = MemoryStorage()
 
 bot: Bot = Bot(token=bot_token, parse_mode=ParseMode('HTML'))
 dp: Dispatcher = Dispatcher(storage=storage)
+
+os.makedirs('users_of_groups_to_json', exist_ok=True)
 
 
 async def main() -> None:

@@ -11,7 +11,7 @@ async def user_to_database(message: types.Message) -> None:
 
     try:
 
-        connection = sqlite3.connect('C:\\Python_Projects\\ReAssembler\\database\\bot_users.db')
+        connection = sqlite3.connect('../database/bot_users.db')
         cursor = connection.cursor()
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS users 
@@ -37,7 +37,7 @@ async def user_to_database(message: types.Message) -> None:
 
                 continue
 
-        connection = sqlite3.connect('C:\\Python_Projects\\ReAssembler\\database\\bot_users.db')
+        connection = sqlite3.connect('../database/bot_users.db')
         cursor = connection.cursor()
 
         cursor.execute('''INSERT INTO users (id, first_name, username)
@@ -48,12 +48,12 @@ async def user_to_database(message: types.Message) -> None:
         cursor.close()
         connection.close()
 
-        with open('C:\\Python_Projects\\ReAssembler\\utils\\logs.txt', 'a', encoding='utf8') as logs:
+        with open('../secret_data/logs.txt', 'a', encoding='utf8') as logs:
 
             logs.write(f'Дата {datetime.datetime.now()}\nЮзер @{user_username} добавлен в базу данных\n\n')
 
     except Exception as e:
 
-        with open('C:\\Python_Projects\\ReAssembler\\utils\\errors.txt') as errors:
+        with open('../secret_data/errors.txt', 'w') as errors:
 
             errors.write(f'Дата {datetime.datetime.now()}\nОшибка {e}\n\n')

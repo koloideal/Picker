@@ -4,8 +4,9 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 class SearchState(StatesGroup):
-    waiting_for_get_messages = State()
-    waiting_for_search_participants = State()
+
+    waiting_for_search_participants_of_channel = State()
+    waiting_for_search_participants_of_group = State()
 
 
 async def search(message: Message) -> None:
@@ -21,6 +22,7 @@ async def search(message: Message) -> None:
         [get_us_channel],
         [get_mes_groups],
         [get_mes_channel]
+
     ]
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
