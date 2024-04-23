@@ -1,5 +1,5 @@
-/.idea
-/Python
+.idea
+.venv
 handlers/kolo_id.session
 identifier.sqlite
 handlers/__pycache__/
@@ -11,3 +11,5 @@ session.session
 utils_func/__pycache__/
 get_data_telegram/session.session
 get_data_telegram/__pycache__/
+database
+users_of_channels_to_json

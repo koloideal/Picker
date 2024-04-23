@@ -1,56 +1,73 @@
-import os
+import asyncio
+import re
 
 from telethon import TelegramClient
 from telethon.tl.functions.channels import GetParticipantsRequest
-from telethon.tl.types import ChannelParticipantsSearch
-import configparser
+from telethon.tl.types import ChannelParticipantsSearch, Channel
+from configparser import ConfigParser
 import json
+from telethon.errors.rpcerrorlist import ChatAdminRequiredError
 
-config = configparser.ConfigParser()
+config: ConfigParser = ConfigParser()
 config.read('secret_data/config.ini')
 
-api_id = config.get('Telegram', 'api_id')
-api_hash = config.get('Telegram', 'api_hash')
+api_id: str = config.get('Telegram', 'api_id')
+api_hash: str = config.get('Telegram', 'api_hash')
 
 
 async def get_users_from_channel(channel_name):
 
-    client = TelegramClient('session', int(api_id), api_hash)
+    client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
     await client.start()
 
-    channel = await client.get_entity(channel_name)
+    channel: Channel = await client.get_entity(channel_name)
 
-    channel_title = channel.title.replace(' ', '_').replace('/', '').replace('\\', '')
+    channel_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
 
-    offset = 0
-    limit = 100
-    all_users = []
+    offset: int = 0
+    limit: int = 100
+    all_users: list = []
 
     while True:
 
-        result = await client(GetParticipantsRequest(
+        try:
 
-            channel=channel,
-            filter=ChannelParticipantsSearch(''),
-            offset=offset,
-            limit=limit,
-            hash=0
+            result: client = await client(GetParticipantsRequest(
 
-        ))
+                channel=channel,
+                filter=ChannelParticipantsSearch(''),
+                offset=offset,
+                limit=limit,
+                hash=0
 
-        users = result.users
+            ))
 
-        all_users.extend(user.__dict__ for user in users)
+        except ChatAdminRequiredError:
 
-        if len(users) < limit:
-            break
+            await client.disconnect()
 
-        offset += limit
+            return 'ChatAdminRequiredError'
+
+        except ValueError:
+
+            return 'ValueError'
+
+        else:
+
+            users: list = result.users
+
+            all_users.extend(user.__dict__ for user in users)
+
+            if len(users) < limit:
+
+                break
+
+            offset += limit
 
     await client.disconnect()
 
-    result = []
+    result: list = []
 
     for user in all_users:
 

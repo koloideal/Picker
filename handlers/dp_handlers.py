@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
+from aiogram.types import FSInputFile
 from handlers.hand_search import SearchState
 from get_data_telegram.get_users_from_groups import get_users_from_groups
 from get_data_telegram.get_users_from_channel import get_users_from_channel
@@ -9,7 +10,7 @@ import os
 async def dp_handlers(dp):
     @dp.callback_query()
     async def callbacks(callback: types.CallbackQuery, state: FSMContext):
-        action = callback.data
+        action: str = callback.data
 
         if action == "get_us_groups":
             await callback.message.answer('Введите ссылку на чат')
@@ -47,7 +48,7 @@ async def dp_handlers(dp):
                                           ' Telegram, разработчик бота не несёт ответственность за'
                                           ' возможное использование этого бота'
                                           ' злоумышленниками\n'
-                                          '----------------------------------------------------------\n\n'
+                                          '------------------------------------------------------------------\n\n'
                                           'Бот не нарушает правил Telegram</b></i>')
 
         elif action == "get_tech_inf":
@@ -63,21 +64,35 @@ async def dp_handlers(dp):
 
         if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
-            file_name = await get_users_from_groups(message.text)
+            file_name: str = await get_users_from_groups(message.text)
 
-            full_file_name = f'users_of_groups_to_json/{file_name}.json'
+            if file_name == '!ChatAdminRequiredError':
 
-            document = types.FSInputFile(full_file_name)
+                await message.answer('Вы должны быть владельцем или админом данного канала')
 
-            await message.answer_document(document=document)
+                await state.clear()
 
-            os.remove(full_file_name)
+            elif file_name == '!ValueError':
 
-            await state.clear()
+                await message.answer('Некорректная ссылка')
+
+                await state.clear()
+
+            else:
+
+                full_file_name: str = f'users_of_groups_to_json/{file_name}.json'
+
+                document: FSInputFile = FSInputFile(full_file_name)
+
+                await message.answer_document(document=document)
+
+                os.remove(full_file_name)
+
+                await state.clear()
 
         else:
 
-            await message.answer('this is not link')
+            await message.answer('This is not link')
 
             await state.clear()
 
@@ -86,20 +101,34 @@ async def dp_handlers(dp):
 
         if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
-            file_name = await get_users_from_channel(message.text)
+            file_name: str = await get_users_from_channel(message.text)
 
-            full_file_name = f'users_of_channels_to_json/{file_name}.json'
+            if file_name == '!ChatAdminRequiredError':
 
-            document = types.FSInputFile(full_file_name)
+                await message.answer('Вы должны быть владельцем или админом данного канала')
 
-            await message.answer_document(document=document)
+                await state.clear()
 
-            os.remove(full_file_name)
+            elif file_name == '!ValueError':
 
-            await state.clear()
+                await message.answer('Некорректная ссылка')
+
+                await state.clear()
+
+            else:
+
+                full_file_name: str = f'users_of_channels_to_json/{file_name}.json'
+
+                document: FSInputFile = FSInputFile(full_file_name)
+
+                await message.answer_document(document=document)
+
+                os.remove(full_file_name)
+
+                await state.clear()
 
         else:
 
-            await message.answer('this is not link')
+            await message.answer('This is not link')
 
             await state.clear()
