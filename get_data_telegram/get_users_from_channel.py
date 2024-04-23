@@ -47,11 +47,13 @@ async def get_users_from_channel(channel_name):
 
             await client.disconnect()
 
-            return 'ChatAdminRequiredError'
+            return '!ChatAdminRequiredError'
 
         except ValueError:
 
-            return 'ValueError'
+            await client.disconnect()
+
+            return '!ValueError'
 
         else:
 
