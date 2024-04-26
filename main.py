@@ -22,6 +22,7 @@ dp: Dispatcher = Dispatcher(storage=storage)
 os.makedirs('users_of_groups_to_json', exist_ok=True)
 os.makedirs('users_of_channels_to_json', exist_ok=True)
 os.makedirs('messages_of_groups_to_json', exist_ok=True)
+os.makedirs('posts_of_channel_to_json', exist_ok=True)
 os.makedirs('database', exist_ok=True)
 
 

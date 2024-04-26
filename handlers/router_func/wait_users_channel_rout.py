@@ -31,13 +31,13 @@ async def get_url_for_users_in_channel_rout(message: types.Message, state: FSMCo
 
         else:
 
-            await processed.delete()
-
             full_file_name: str = f'users_of_channels_to_json/{file_name}.json'
 
             document: FSInputFile = FSInputFile(full_file_name)
 
             await message.answer_document(document=document)
+
+            await processed.delete()
 
             os.remove(full_file_name)
 

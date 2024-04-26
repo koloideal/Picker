@@ -25,6 +25,8 @@ async def get_messages_from_group(url, limit):
 
     messages = await client.get_messages(channel, limit=int(limit))
 
+    print(messages)
+
     users_id = []
 
     for x in messages:

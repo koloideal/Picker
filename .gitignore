@@ -15,3 +15,4 @@ get_data_telegram/__pycache__/
 database
 users_of_channels_to_json
 messages_of_groups_to_json
+posts_of_channel_to_json

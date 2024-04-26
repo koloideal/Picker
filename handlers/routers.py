@@ -7,6 +7,7 @@ from handlers.router_func.callbacks_rout import callbacks_rout
 from handlers.router_func.wait_users_group_rout import get_url_for_users_in_groups_rout
 from handlers.router_func.wait_users_channel_rout import get_url_for_users_in_channel_rout
 from handlers.router_func.wait_messages_group_rout import get_url_for_messages_in_group_rout
+from handlers.router_func.wait_posts_channel_rout import get_url_for_posts_in_channel_rout
 from aiogram import Router
 from aiogram.filters import Command
 
@@ -54,6 +55,12 @@ async def get_url_for_users_in_channel(message: types.Message, state: FSMContext
 async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
 
     await get_url_for_messages_in_group_rout(message, state)
+
+
+@router.message(SearchState.waiting_for_get_posts_of_channel)
+async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
+
+    await get_url_for_posts_in_channel_rout(message, state)
 
 
 @router.message()

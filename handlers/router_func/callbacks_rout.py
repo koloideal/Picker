@@ -1,9 +1,9 @@
 import logging
-
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from handlers.router_func.rout_search import SearchState
-from handlers.router_func.action_00_for_callback import action_00_for_callback
+from handlers.router_func.action_0m_for_callback import action_0m_for_callback
+from handlers.router_func.action_0p_for_callback import action_0p_for_callback
 
 
 async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
@@ -25,11 +25,32 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
 
         await state.set_state(SearchState.waiting_for_get_messages_of_group)
 
-    elif action[-2:] == "00":
+    elif action == "get_pos_channel":
+        await callback.message.answer('Введите ссылку на канал')
+
+        await state.set_state(SearchState.waiting_for_get_posts_of_channel)
+
+    elif action[-2:] == "0p":
 
         try:
 
-            await action_00_for_callback(callback, action)
+            await action_0p_for_callback(callback, action)
+
+        except Exception as e:
+
+            logging.error(e)
+
+            await callback.message.answer('Некорректная ссылка')
+
+        finally:
+
+            await state.clear()
+
+    elif action[-2:] == "0m":
+
+        try:
+
+            await action_0m_for_callback(callback, action)
 
         except Exception as e:
 

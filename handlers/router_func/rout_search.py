@@ -8,6 +8,7 @@ class SearchState(StatesGroup):
     waiting_for_get_participants_of_channel: State = State()
     waiting_for_get_participants_of_group: State = State()
     waiting_for_get_messages_of_group: State = State()
+    waiting_for_get_posts_of_channel: State = State()
 
 
 async def button_to_search_rout(message: Message) -> None:
@@ -21,15 +22,15 @@ async def button_to_search_rout(message: Message) -> None:
     get_mes_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Messages From Groups',
                                                                 callback_data='get_mes_groups')
 
-    get_mes_channel: InlineKeyboardButton = InlineKeyboardButton(text='Get Messages From Channel',
-                                                                 callback_data='get_mes_channel')
+    get_pos_channel: InlineKeyboardButton = InlineKeyboardButton(text='Get Posts From Channel',
+                                                                 callback_data='get_pos_channel')
 
     buttons: list = [
 
         [get_us_groups],
         [get_us_channel],
         [get_mes_groups],
-        [get_mes_channel]
+        [get_pos_channel]
 
     ]
 

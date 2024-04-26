@@ -31,13 +31,13 @@ async def get_url_for_users_in_groups_rout(message: types.Message, state: FSMCon
 
         else:
 
-            await processed.delete()
-
             full_file_name: str = f'users_of_groups_to_json/{file_name}.json'
 
             document: FSInputFile = FSInputFile(full_file_name)
 
             await message.answer_document(document=document)
+
+            await processed.delete()
 
             os.remove(full_file_name)
 
