@@ -5,11 +5,12 @@ from aiogram.fsm.state import StatesGroup, State
 
 class SearchState(StatesGroup):
 
-    waiting_for_search_participants_of_channel: State = State()
-    waiting_for_search_participants_of_group: State = State()
+    waiting_for_get_participants_of_channel: State = State()
+    waiting_for_get_participants_of_group: State = State()
+    waiting_for_get_messages_of_group: State = State()
 
 
-async def search(message: Message) -> None:
+async def button_to_search_rout(message: Message) -> None:
 
     get_us_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Users From Groups',
                                                                callback_data='get_us_groups')

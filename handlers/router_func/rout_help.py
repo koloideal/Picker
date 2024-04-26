@@ -2,7 +2,7 @@ from aiogram.types import Message
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-async def helper(message: Message):
+async def button_to_help_rout(message: Message):
 
     get_inf_but: InlineKeyboardButton = InlineKeyboardButton(text='Информация о кнопках команды /search',
                                                              callback_data='get_inf_but')
