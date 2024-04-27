@@ -11,6 +11,12 @@ class SearchState(StatesGroup):
     waiting_for_get_posts_of_channel: State = State()
 
 
+class AdminState(StatesGroup):
+
+    waiting_for_add_admin: State = State()
+    waiting_for_del_admin: State = State()
+
+
 async def button_to_search_rout(message: Message) -> None:
 
     get_us_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Users From Groups',

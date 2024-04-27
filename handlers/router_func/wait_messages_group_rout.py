@@ -5,6 +5,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 async def get_url_for_messages_in_group_rout(message: types.Message, state: FSMContext):
+
     if message.text.startswith('t.me') or message.text.startswith('https://t.me'):
 
         builder: InlineKeyboardBuilder = InlineKeyboardBuilder()

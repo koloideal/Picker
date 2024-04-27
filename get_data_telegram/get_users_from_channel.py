@@ -1,6 +1,4 @@
-import asyncio
 import re
-
 from telethon import TelegramClient
 from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.types import ChannelParticipantsSearch, Channel
