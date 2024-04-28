@@ -11,21 +11,11 @@ async def get_url_for_users_in_groups_rout(message: types.Message, state: FSMCon
 
         processed = await message.answer('Processed...')
 
-        file_name: str = await get_users_from_groups(message.text)
+        file_name: str = await get_users_from_groups(message)
 
-        if file_name == '!ChatAdminRequiredError':
-
-            await processed.delete()
-
-            await message.answer('Вы должны быть владельцем или админом данного канала')
-
-            await state.clear()
-
-        elif file_name == '!ValueError':
+        if not file_name:
 
             await processed.delete()
-
-            await message.answer('Некорректная ссылка')
 
             await state.clear()
 

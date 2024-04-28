@@ -3,13 +3,12 @@ from database_func.get_admins import get_admins
 from aiogram.types import FSInputFile
 from datetime import datetime
 import sqlite3
-from sqlite3 import Connection, Cursor
+from sqlite3 import Connection, Cursor, OperationalError
 import json
 import os
-from sqlite3 import OperationalError
 
 
-async def get_users_bd_rout(message: types.Message):
+async def get_ban_users_bd_rout(message: types.Message):
 
     user_id = message.from_user.id
 
@@ -24,16 +23,16 @@ async def get_users_bd_rout(message: types.Message):
 
         try:
 
-            connection: Connection = sqlite3.connect('database/bot_users.db')
+            connection: Connection = sqlite3.connect('database/banned_users.db')
             cursor: Cursor = connection.cursor()
 
-            cursor.execute('''SELECT * FROM users''')
+            cursor.execute('''SELECT * FROM banned_users''')
 
-            all_users = cursor.fetchall()
+            all_banned_users = cursor.fetchall()
 
         except OperationalError:
 
-            await message.answer('Database is empty, enter /start and try again')
+            await message.answer('Database is empty, ban user and try again')
 
             cursor.close()
             connection.close()
@@ -45,19 +44,26 @@ async def get_users_bd_rout(message: types.Message):
             cursor.close()
             connection.close()
 
+        if not all_banned_users:
+
+            await message.answer('Database is empty, ban user and try again')
+
+            return
+
         to_dump_data = {}
 
-        for user in all_users:
+        for user in all_banned_users:
 
-            to_dump_data[user[2]] = {
+            to_dump_data[user[3]] = {
 
                 'user_id': user[0],
                 'user_first_name': user[1],
-                'user_username': user[2]
+                'user_last_name': user[2],
+                'user_username': user[3]
 
             }
 
-        full_file_name: str = f'secret_data/bot_users.json'
+        full_file_name: str = f'secret_data/banned_users.json'
 
         with open(full_file_name, 'w', encoding='utf8') as file:
 

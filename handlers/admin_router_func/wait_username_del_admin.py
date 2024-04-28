@@ -3,8 +3,8 @@ from aiogram.fsm.context import FSMContext
 from configparser import ConfigParser
 from telethon.sync import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
-from utils_func.del_admin import del_admin
-from utils_func.get_admins import get_admins
+from database_func.del_admin import del_admin
+from database_func.get_admins import get_admins
 
 
 config: ConfigParser = ConfigParser()
@@ -24,7 +24,7 @@ async def get_username_for_del_admin_rout(message: types.Message, state: FSMCont
 
         admin_id = await get_admins()
 
-        await client.connect()
+        await client.start()
 
         if message.text.startswith('t.me/') or message.text.startswith('https://t.me/'):
 

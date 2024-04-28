@@ -17,12 +17,12 @@ async def drop_data_rout(message: types.Message):
 
             os.remove('database/admin_users.db')
             os.remove('database/bot_users.db')
+            os.remove('database/banned_users.db')
 
             with open('secret_data/logs.txt', 'w'):
                 pass
 
         except FileNotFoundError:
-
             pass
 
         finally:

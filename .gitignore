@@ -9,7 +9,7 @@ channel_users.json
 users_of_groups_to_json
 secret_data
 session.session
-utils_func/__pycache__/
+database_func/__pycache__/
 get_data_telegram/session.session
 get_data_telegram/__pycache__/
 database

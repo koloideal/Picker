@@ -1,5 +1,5 @@
 from aiogram import types
-from utils_func.get_admins import get_admins
+from database_func.get_admins import get_admins
 from aiogram.types import FSInputFile
 from datetime import datetime
 import sqlite3

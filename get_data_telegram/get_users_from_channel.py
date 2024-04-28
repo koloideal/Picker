@@ -1,7 +1,7 @@
 import re
 from telethon import TelegramClient
-from telethon.tl.functions.channels import GetParticipantsRequest
-from telethon.tl.types import ChannelParticipantsSearch, Channel
+from telethon.tl.types import Channel
+from aiogram.types import Message
 from configparser import ConfigParser
 import json
 from telethon.errors.rpcerrorlist import ChatAdminRequiredError
@@ -13,59 +13,37 @@ api_id: str = config.get('Telegram', 'api_id')
 api_hash: str = config.get('Telegram', 'api_hash')
 
 
-async def get_users_from_channel(channel_name):
+async def get_users_from_channel(message: Message):
 
     client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
     await client.start()
 
-    channel: Channel = await client.get_entity(channel_name)
+    try:
 
-    channel_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
+        channel: Channel = await client.get_entity(message.text)
 
-    offset: int = 0
-    limit: int = 100
-    all_users: list = []
+        all_users = await client.get_participants(message.text)
 
-    while True:
+    except ChatAdminRequiredError:
 
-        try:
+        await client.disconnect()
 
-            result: client = await client(GetParticipantsRequest(
+        await message.answer('Вы должны быть владельцем или админом данного канала')
 
-                channel=channel,
-                filter=ChannelParticipantsSearch(''),
-                offset=offset,
-                limit=limit,
-                hash=0
+        return
 
-            ))
+    except ValueError:
 
-        except ChatAdminRequiredError:
+        await client.disconnect()
 
-            await client.disconnect()
+        await message.answer('Некорректная ссылка')
 
-            return '!ChatAdminRequiredError'
+        return
 
-        except ValueError:
+    else:
 
-            await client.disconnect()
-
-            return '!ValueError'
-
-        else:
-
-            users: list = result.users
-
-            all_users.extend(user.__dict__ for user in users)
-
-            if len(users) < limit:
-
-                break
-
-            offset += limit
-
-    await client.disconnect()
+        await client.disconnect()
 
     result: list = []
 
@@ -73,27 +51,19 @@ async def get_users_from_channel(channel_name):
 
         result.append({
 
-            'id': user['id'],
-            'first_name': user['first_name'],
-            'last_name': user['last_name'],
-            'username': user['username'],
-            'phone': user['phone'],
-            'is_bot': user['bot']
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'phone': user.phone,
+            'is_bot': user.bot
 
         })
 
+    channel_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
+
     with open(f'users_of_channels_to_json/{channel_title}.json', 'w', encoding='utf8') as file:
 
-        file.write('{}')
-
-    with open(f'users_of_channels_to_json/{channel_title}.json', 'r+', encoding='utf8') as file:
-
-        file_data: json = json.load(file)
-
-        file_data[channel_title]: json = result
-
-        file.seek(0)
-
-        json.dump(file_data, file, indent=4, ensure_ascii=False)
+        json.dump({channel_title: result}, file, indent=4, ensure_ascii=False)
 
     return channel_title

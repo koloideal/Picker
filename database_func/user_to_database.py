@@ -17,7 +17,7 @@ async def user_to_database(message: types.Message) -> None:
                               (id int,
                                first_name varchar(50),
                                username varchar(50),
-                               UNIQUE(id, first_name, username))''')
+                               UNIQUE(id))''')
     connection.commit()
 
     cursor.execute('''INSERT OR IGNORE INTO users (id, first_name, username)
