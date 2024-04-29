@@ -21,7 +21,7 @@ async def start_rout(message: types.Message) -> None:
     creator_case = ((case1 and case5) or (case2 and case5)) and not case4
     admin_case = case3 and case5 and not (case4 or case1 or case2)
     user_case = case5 and not (case1 or case2 or case3 or case4)
-    banned_user_case = (case4 and not (case1 or case2 or case3 or case5)) or case4 and case3
+    banned_user_case = (case4 and not (case1 or case2 or case3 or case5)) or (case4 and case3)
 
     if creator_case:
 

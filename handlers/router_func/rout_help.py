@@ -13,15 +13,11 @@ async def button_to_help_rout(message: Message):
     get_tech_inf: InlineKeyboardButton = InlineKeyboardButton(text='Техническая информация',
                                                               callback_data='get_tech_inf')
 
-    get_all_inf: InlineKeyboardButton = InlineKeyboardButton(text='Вся информация',
-                                                             callback_data='get_all_inf')
-
     buttons: list = [
 
         [get_inf_but],
         [get_big_inf],
-        [get_tech_inf],
-        [get_all_inf]
+        [get_tech_inf]
     ]
 
     keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=buttons)

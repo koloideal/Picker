@@ -82,7 +82,7 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
                                       '------------------------------------------------------------------\n'
                                       '<i><b>Данный бот создан для автоматизации сбора информации:'
                                       ' сбор статистики, информации о пользователях Telegram и прочей информации,'
-                                      ' которую можно добыть с помощью'
+                                      ' которую можно собрать с помощью'
                                       ' этого бота, перед использованием внимательно ознакомьтесь'
                                       ' с политикой конфиденциальности'
                                       ' Telegram, разработчик бота не несёт ответственность за'
@@ -92,9 +92,5 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
                                       'Бот не нарушает правил Telegram</b></i>')
 
     elif action == "get_tech_inf":
-
-        await callback.message.answer('Введите ссылку на чат')
-
-    elif action == "get_all_inf":
 
         await callback.message.answer('Введите ссылку на чат')

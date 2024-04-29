@@ -59,5 +59,3 @@ async def button_to_search_rout(message: Message) -> None:
         keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=buttons)
 
         await message.answer('<b>Выберите кнопку исходя из вашего запроса</b>', reply_markup=keyboard)
-
-
