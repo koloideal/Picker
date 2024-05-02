@@ -1,13 +1,17 @@
-from aiogram import types, F
+from aiogram import types, F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
 from handlers.router_func.rout_search import SearchState, AdminState, button_to_search_rout
 from handlers.router_func.rout_help import button_to_help_rout
 from handlers.router_func.rout_start import start_rout
 from handlers.router_func.callbacks_rout import callbacks_rout
 from handlers.router_func.wait_users_group_rout import get_url_for_users_in_groups_rout
 from handlers.router_func.wait_users_channel_rout import get_url_for_users_in_channel_rout
-from handlers.router_func.wait_messages_group_rout import get_url_for_messages_in_group_rout
-from handlers.router_func.wait_posts_channel_rout import get_url_for_posts_in_channel_rout
+from handlers.router_func.wait_messages_group_rout import get_url_for_messages_in_group_rout, CallbackForGetMessages
+from handlers.router_func.wait_posts_channel_rout import get_url_for_posts_in_channel_rout, CallbackForGetPosts
+from handlers.router_func.wait_users_private_group_rout import get_url_for_users_in_private_groups_rout
+from handlers.router_func.second_step_to_get_posts import second_step_to_get_posts
+from handlers.router_func.second_step_to_get_messages import second_step_to_get_messages
 from handlers.admin_router_func.add_admin_rout import add_admin_rout
 from handlers.admin_router_func.del_admin_rout import del_admin_rout
 from handlers.admin_router_func.ban_user_rout import ban_user_rout
@@ -21,8 +25,6 @@ from handlers.admin_router_func.get_bd_with_admins import get_admin_bd_rout
 from handlers.admin_router_func.get_bd_with_users import get_users_bd_rout
 from handlers.admin_router_func.get_bd_with_ban_users import get_ban_users_bd_rout
 from handlers.admin_router_func.drop_data import drop_data_rout
-from aiogram import Router
-from aiogram.filters import Command
 
 
 router: Router = Router()
@@ -100,34 +102,52 @@ async def drop_data_routing(message: types.Message):
     await drop_data_rout(message)
 
 
+@router.callback_query(CallbackForGetPosts.filter(F.action == 'get_posts'))
+async def callbacks_cd_routing(callback: types.CallbackQuery, callback_data: CallbackForGetPosts, state: FSMContext):
+
+    await second_step_to_get_posts(callback, callback_data, state)
+
+
+@router.callback_query(CallbackForGetMessages.filter(F.action == 'get_messages'))
+async def callbacks_cd_routing(callback: types.CallbackQuery, callback_data: CallbackForGetMessages, state: FSMContext):
+
+    await second_step_to_get_messages(callback, callback_data, state)
+
+
 @router.callback_query()
 async def callbacks_routing(callback: types.CallbackQuery, state: FSMContext):
 
     await callbacks_rout(callback, state)
 
 
-@router.message(SearchState.waiting_for_get_participants_of_group)
+@router.message(SearchState.waiting_for_get_participants_from_group)
 async def get_url_for_users_in_groups(message: types.Message, state: FSMContext):
 
     await get_url_for_users_in_groups_rout(message, state)
 
 
-@router.message(SearchState.waiting_for_get_participants_of_channel)
+@router.message(SearchState.waiting_for_get_participants_from_channel)
 async def get_url_for_users_in_channel(message: types.Message, state: FSMContext):
 
     await get_url_for_users_in_channel_rout(message, state)
 
 
-@router.message(SearchState.waiting_for_get_messages_of_group)
+@router.message(SearchState.waiting_for_get_messages_from_group)
 async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
 
     await get_url_for_messages_in_group_rout(message, state)
 
 
-@router.message(SearchState.waiting_for_get_posts_of_channel)
+@router.message(SearchState.waiting_for_get_posts_from_channel)
 async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
 
     await get_url_for_posts_in_channel_rout(message, state)
+
+
+@router.message(SearchState.waiting_for_get_users_from_private_group)
+async def get_url_for_users_in_private_group(message: types.Message, state: FSMContext):
+
+    await get_url_for_users_in_private_groups_rout(message, state)
 
 
 @router.message(AdminState.waiting_for_add_admin)

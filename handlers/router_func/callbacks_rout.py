@@ -1,9 +1,6 @@
-import logging
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from handlers.router_func.rout_search import SearchState
-from handlers.router_func.action_0m_for_callback import action_0m_for_callback
-from handlers.router_func.action_0p_for_callback import action_0p_for_callback
 
 
 async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
@@ -11,56 +8,44 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
     action: str = callback.data
 
     if action == "get_us_groups":
+
         await callback.message.answer('Введите ссылку на чат')
 
-        await state.set_state(SearchState.waiting_for_get_participants_of_group)
+        await callback.message.delete()
+
+        await state.set_state(SearchState.waiting_for_get_participants_from_group)
 
     elif action == "get_us_channel":
+
         await callback.message.answer('Введите ссылку на канал')
 
-        await state.set_state(SearchState.waiting_for_get_participants_of_channel)
+        await callback.message.delete()
+
+        await state.set_state(SearchState.waiting_for_get_participants_from_channel)
 
     elif action == "get_mes_groups":
+
         await callback.message.answer('Введите ссылку на чат')
 
-        await state.set_state(SearchState.waiting_for_get_messages_of_group)
+        await callback.message.delete()
+
+        await state.set_state(SearchState.waiting_for_get_messages_from_group)
 
     elif action == "get_pos_channel":
+
         await callback.message.answer('Введите ссылку на канал')
 
-        await state.set_state(SearchState.waiting_for_get_posts_of_channel)
+        await callback.message.delete()
 
-    elif action[-2:] == "0p":
+        await state.set_state(SearchState.waiting_for_get_posts_from_channel)
 
-        try:
+    elif action == "get_mes_private_groups":
 
-            await action_0p_for_callback(callback, action)
+        await callback.message.answer('Введите пригласительную ссылку на приватный чат')
 
-        except Exception as e:
+        await callback.message.delete()
 
-            logging.error(e)
-
-            await callback.message.answer('Некорректная ссылка')
-
-        finally:
-
-            await state.clear()
-
-    elif action[-2:] == "0m":
-
-        try:
-
-            await action_0m_for_callback(callback, action)
-
-        except Exception as e:
-
-            logging.error(e)
-
-            await callback.message.answer('Некорректная ссылка')
-
-        finally:
-
-            await state.clear()
+        await state.set_state(SearchState.waiting_for_get_users_from_private_group)
 
     elif action == "get_inf_but":
 
@@ -93,4 +78,15 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
 
     elif action == "get_tech_inf":
 
-        await callback.message.answer('Введите ссылку на чат')
+        await callback.message.answer('<b>Техническая информация :</b>\n\n'
+                                      '------------------------------------------------------------------\n'
+                                      'Бот написан на фреймворке для <b>Python</b> - <i>aiogram v3.5.0</i>, для '
+                                      'сбора информации используется библиотека <i>Telethon v1.35.0</i>\n\n'
+                                      'Среднее время ожидания сбора информации об участниках из чата с 1к участников'
+                                      ' - 3 секунды\n\n'
+                                      'В актуальной версии бота не собираются изображение из постов в каналах и в'
+                                      ' сообщениях из чатов\n\n'
+                                      'В боте реализована система иерархии, присутствует роль Создателя, админов и '
+                                      'обычных юзеров, также реализована система бана пользователей\n'
+                                      '------------------------------------------------------------------\n\n'
+                                      '<i><b>Бот не нарушает правил Telegram</b></i>')
