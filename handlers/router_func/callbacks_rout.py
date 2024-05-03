@@ -39,13 +39,21 @@ async def callbacks_rout(callback: types.CallbackQuery, state: FSMContext):
 
         await state.set_state(SearchState.waiting_for_get_posts_from_channel)
 
-    elif action == "get_mes_private_groups":
+    elif action == "get_us_private_groups":
 
         await callback.message.answer('Введите пригласительную ссылку на приватный чат')
 
         await callback.message.delete()
 
         await state.set_state(SearchState.waiting_for_get_users_from_private_group)
+
+    elif action == "get_mes_private_groups":
+
+        await callback.message.answer('Введите пригласительную ссылку на приватный чат')
+
+        await callback.message.delete()
+
+        await state.set_state(SearchState.waiting_for_get_messages_from_private_group)
 
     elif action == "get_inf_but":
 

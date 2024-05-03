@@ -4,7 +4,6 @@ handlers/kolo_id.session
 identifier.sqlite
 handlers/__pycache__/
 __pycache__
-kolo_id.session
 channel_users.json
 users_of_groups_to_json
 secret_data
@@ -16,3 +15,5 @@ database
 users_of_channels_to_json
 messages_of_groups_to_json
 posts_of_channel_to_json
+messages_of_private_groups_to_json
+users_of_private_groups_to_json

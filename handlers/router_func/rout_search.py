@@ -10,6 +10,7 @@ class SearchState(StatesGroup):
     waiting_for_get_messages_from_group: State = State()
     waiting_for_get_posts_from_channel: State = State()
     waiting_for_get_users_from_private_group: State = State()
+    waiting_for_get_messages_from_private_group: State = State()
 
 
 class AdminState(StatesGroup):
@@ -45,7 +46,10 @@ async def button_to_search_rout(message: Message) -> None:
         get_pos_channel: InlineKeyboardButton = InlineKeyboardButton(text='Get Posts From Channel',
                                                                      callback_data='get_pos_channel')
 
-        get_mes_private_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Messages From Private Groups',
+        get_us_private_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Users From Private Groups',
+                                                                           callback_data='get_us_private_groups')
+
+        get_mes_private_groups: InlineKeyboardButton = InlineKeyboardButton(text='Get Message From Private Groups',
                                                                             callback_data='get_mes_private_groups')
 
         buttons: list = [
@@ -54,6 +58,7 @@ async def button_to_search_rout(message: Message) -> None:
             [get_us_channel],
             [get_mes_groups],
             [get_pos_channel],
+            [get_us_private_groups],
             [get_mes_private_groups]
 
         ]
