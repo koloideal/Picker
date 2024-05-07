@@ -35,73 +35,73 @@ router: Router = Router()
 
 
 @router.message(Command('start'))
-async def start_routing(message: types.Message):
+async def start_routing(message: types.Message) -> None:
 
     await start_rout(message)
 
 
 @router.message(Command('help'))
-async def help_routing(message: types.Message):
+async def help_routing(message: types.Message) -> None:
 
     await button_to_help_rout(message)
 
 
 @router.message(Command('search'))
-async def search_routing(message: types.Message):
+async def search_routing(message: types.Message) -> None:
 
     await button_to_search_rout(message)
 
 
 @router.message(Command('add_admin'))
-async def add_admin_routing(message: types.Message, state: FSMContext):
+async def add_admin_routing(message: types.Message, state: FSMContext) -> None:
 
     await add_admin_rout(message, state)
 
 
 @router.message(Command('del_admin'))
-async def del_admin_routing(message: types.Message, state: FSMContext):
+async def del_admin_routing(message: types.Message, state: FSMContext) -> None:
 
     await del_admin_rout(message, state)
 
 
 @router.message(Command('ban_user'))
-async def ban_user_routing(message: types.Message, state: FSMContext):
+async def ban_user_routing(message: types.Message, state: FSMContext) -> None:
 
     await ban_user_rout(message, state)
 
 
 @router.message(Command('unban_user'))
-async def unban_user_routing(message: types.Message, state: FSMContext):
+async def unban_user_routing(message: types.Message, state: FSMContext) -> None:
 
     await unban_user_rout(message, state)
 
 
 @router.message(Command('get_logs'))
-async def get_logs_routing(message: types.Message):
+async def get_logs_routing(message: types.Message) -> None:
 
     await get_logs_rout(message)
 
 
 @router.message(Command('get_admins_bd'))
-async def get_admin_bd_routing(message: types.Message):
+async def get_admin_bd_routing(message: types.Message) -> None:
 
     await get_admin_bd_rout(message)
 
 
 @router.message(Command('get_users_bd'))
-async def get_users_bd_routing(message: types.Message):
+async def get_users_bd_routing(message: types.Message) -> None:
 
     await get_users_bd_rout(message)
 
 
 @router.message(Command('get_ban_users_bd'))
-async def get_ban_users_bd_routing(message: types.Message):
+async def get_ban_users_bd_routing(message: types.Message) -> None:
 
     await get_ban_users_bd_rout(message)
 
 
 @router.message(F.text == 'drop data')
-async def drop_data_routing(message: types.Message):
+async def drop_data_routing(message: types.Message) -> None:
 
     await drop_data_rout(message)
 
@@ -109,7 +109,20 @@ async def drop_data_routing(message: types.Message):
 @router.callback_query(CallbackForGetPosts.filter(F.action == 'get_posts'))
 async def callbacks_CFGP_routing(callback: CallbackQuery,
                                  callback_data: CallbackForGetPosts,
-                                 state: FSMContext):
+                                 state: FSMContext) -> None:
+
+    waiting_time: dict = {
+
+        20: 0.1,
+        100: 0.5,
+        500: 3,
+        1000: 7,
+        3000: 15
+
+    }
+
+    await callback.message.answer(f'Collected posts: {callback_data.limit}\n'
+                                  f'Waiting time ~ {str(waiting_time[callback_data.limit])}s')
 
     await second_step_to_get_posts(callback, callback_data, state)
 
@@ -117,7 +130,20 @@ async def callbacks_CFGP_routing(callback: CallbackQuery,
 @router.callback_query(CallbackForGetMessages.filter(F.action == 'get_messages'))
 async def callbacks_CFGM_routing(callback: CallbackQuery,
                                  callback_data: CallbackForGetMessages,
-                                 state: FSMContext):
+                                 state: FSMContext) -> None:
+
+    waiting_time: dict = {
+
+        100: 2,
+        500: 5,
+        2000: 15,
+        5000: 25,
+        10000: 40
+
+    }
+
+    await callback.message.answer(f'Collected messages: {callback_data.limit}\n'
+                                  f'Waiting time ~ {str(waiting_time[callback_data.limit])}s')
 
     await second_step_to_get_messages(callback, callback_data, state)
 
@@ -125,79 +151,91 @@ async def callbacks_CFGM_routing(callback: CallbackQuery,
 @router.callback_query(CallbackForGetMessagesInPrivate.filter(F.action == 'get_messages_private'))
 async def callbacks_CFGMIP_routing(callback: CallbackQuery,
                                    callback_data: CallbackForGetMessagesInPrivate,
-                                   state: FSMContext):
+                                   state: FSMContext) -> None:
+
+    waiting_time: dict = {
+
+        100: 2,
+        500: 5,
+        2000: 15,
+        5000: 25,
+        10000: 40
+
+    }
+
+    await callback.message.answer(f'Collected messages: {callback_data.limit}\n'
+                                  f'Waiting time ~ {str(waiting_time[callback_data.limit])}s')
 
     await second_step_to_get_messages_private(callback, callback_data, state)
 
 
 @router.callback_query()
-async def callbacks_routing(callback: CallbackQuery, state: FSMContext):
+async def callbacks_routing(callback: CallbackQuery, state: FSMContext) -> None:
 
     await callbacks_rout(callback, state)
 
 
 @router.message(SearchState.waiting_for_get_participants_from_group)
-async def get_url_for_users_in_groups(message: types.Message, state: FSMContext):
+async def get_url_for_users_in_groups(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_users_in_groups_rout(message, state)
 
 
 @router.message(SearchState.waiting_for_get_participants_from_channel)
-async def get_url_for_users_in_channel(message: types.Message, state: FSMContext):
+async def get_url_for_users_in_channel(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_users_in_channel_rout(message, state)
 
 
 @router.message(SearchState.waiting_for_get_messages_from_group)
-async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
+async def get_url_for_messages_in_group(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_messages_in_group_rout(message, state)
 
 
 @router.message(SearchState.waiting_for_get_posts_from_channel)
-async def get_url_for_messages_in_group(message: types.Message, state: FSMContext):
+async def get_url_for_messages_in_group(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_posts_in_channel_rout(message, state)
 
 
 @router.message(SearchState.waiting_for_get_users_from_private_group)
-async def get_url_for_users_in_private_group(message: types.Message, state: FSMContext):
+async def get_url_for_users_in_private_group(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_users_in_private_groups_rout(message, state)
 
 
 @router.message(SearchState.waiting_for_get_messages_from_private_group)
-async def get_url_for_messages_in_private_group(message: types.Message, state: FSMContext):
+async def get_url_for_messages_in_private_group(message: types.Message, state: FSMContext) -> None:
 
     await get_url_for_messages_in_private_group_rout(message, state)
 
 
 @router.message(AdminState.waiting_for_add_admin)
-async def get_username_for_add_admin(message: types.Message, state: FSMContext):
+async def get_username_for_add_admin(message: types.Message, state: FSMContext) -> None:
 
     await get_username_for_add_admin_rout(message, state)
 
 
 @router.message(AdminState.waiting_for_del_admin)
-async def get_username_for_del_admin(message: types.Message, state: FSMContext):
+async def get_username_for_del_admin(message: types.Message, state: FSMContext) -> None:
 
     await get_username_for_del_admin_rout(message, state)
 
 
 @router.message(AdminState.waiting_for_ban_user)
-async def get_username_for_ban_user(message: types.Message, state: FSMContext):
+async def get_username_for_ban_user(message: types.Message, state: FSMContext) -> None:
 
     await get_username_for_ban_user_rout(message, state)
 
 
 @router.message(AdminState.waiting_for_unban_user)
-async def get_username_for_unban_user(message: types.Message, state: FSMContext):
+async def get_username_for_unban_user(message: types.Message, state: FSMContext) -> None:
 
     await get_username_for_unban_user_rout(message, state)
 
 
 @router.message()
-async def unknown_command(message: types.Message):
+async def unknown_command(message: types.Message) -> None:
 
-    await message.answer('Unknown command\n'
-                         'Enter /help to get help')
+    await message.answer('Unknown command, enter /help')

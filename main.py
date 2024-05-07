@@ -19,18 +19,13 @@ storage: MemoryStorage = MemoryStorage()
 bot: Bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp: Dispatcher = Dispatcher(storage=storage)
 
-os.makedirs('users_of_groups_to_json', exist_ok=True)
-os.makedirs('users_of_channels_to_json', exist_ok=True)
-os.makedirs('messages_of_groups_to_json', exist_ok=True)
-os.makedirs('posts_of_channel_to_json', exist_ok=True)
-os.makedirs('users_of_private_groups_to_json', exist_ok=True)
-os.makedirs('messages_of_private_groups_to_json', exist_ok=True)
+os.makedirs('content', exist_ok=True)
 os.makedirs('database', exist_ok=True)
 
 
 async def main() -> None:
 
-    logging.warning(f'Starting bot...')
+    logging.warning('Starting bot...')
 
     dp.include_router(router)
 

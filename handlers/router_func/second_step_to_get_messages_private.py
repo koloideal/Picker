@@ -5,6 +5,7 @@ import os
 from handlers.router_func.wait_messages_private_group import CallbackForGetMessagesInPrivate
 from aiogram.fsm.context import FSMContext
 import logging
+from aiogram.types.message import Message
 
 
 async def second_step_to_get_messages_private(callback: types.CallbackQuery,
@@ -14,20 +15,18 @@ async def second_step_to_get_messages_private(callback: types.CallbackQuery,
 
         await callback.message.delete()
 
-        link = callback_data.link
-        limit = callback_data.limit
+        link: str = callback_data.link
+        limit: int = callback_data.limit
 
-        processed = await callback.message.answer('Processed...')
+        processed: Message = await callback.message.answer('Processed...')
 
         file_name: str = await get_messages_from_private_group(link, limit)
 
     except Exception as e:
 
-        print(e)
-
         logging.error(e)
 
-        await callback.message.answer('Некорректная ссылка')
+        await callback.message.answer('Invalid link')
 
     else:
 
@@ -43,7 +42,7 @@ async def second_step_to_get_messages_private(callback: types.CallbackQuery,
 
         else:
 
-            await callback.message.answer('Слишком много попыток, попробуйте через 10 минут')
+            await callback.message.answer('Too many attempts, try again after 10 minutes')
 
     finally:
 
@@ -51,4 +50,4 @@ async def second_step_to_get_messages_private(callback: types.CallbackQuery,
 
         await state.clear()
 
-        return None
+        return

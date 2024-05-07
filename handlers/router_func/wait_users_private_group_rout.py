@@ -1,15 +1,15 @@
-from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import FSInputFile
 from get_data_telegram.get_users_from_private_group import get_users_from_private_groups
 import os
+from aiogram.types.message import Message
 
 
-async def get_url_for_users_in_private_groups_rout(message: types.Message, state: FSMContext):
+async def get_url_for_users_in_private_groups_rout(message: Message, state: FSMContext) -> None:
 
     if message.text.startswith('t.me/+') or message.text.startswith('https://t.me/+'):
 
-        processed = await message.answer('Processed...')
+        processed: Message = await message.answer('Processed...')
 
         file_name: str = await get_users_from_private_groups(message)
 
@@ -21,7 +21,7 @@ async def get_url_for_users_in_private_groups_rout(message: types.Message, state
 
         else:
 
-            full_file_name: str = f'users_of_private_groups_to_json/{file_name}.json'
+            full_file_name: str = f'content/{file_name}.json'
 
             document: FSInputFile = FSInputFile(full_file_name)
 
@@ -38,3 +38,5 @@ async def get_url_for_users_in_private_groups_rout(message: types.Message, state
         await message.answer('This is not link')
 
         await state.clear()
+
+    return

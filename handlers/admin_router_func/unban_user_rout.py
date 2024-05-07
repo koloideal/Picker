@@ -4,19 +4,20 @@ from aiogram.fsm.context import FSMContext
 from database_func.get_admins import get_admins
 
 
-async def unban_user_rout(message: types.Message, state: FSMContext):
+async def unban_user_rout(message: types.Message, state: FSMContext) -> None:
 
-    user_id = message.from_user.id
+    user_id: int = message.from_user.id
 
-    admins_id = await get_admins()
+    admins_id: list = await get_admins()
 
     if user_id != 2047958833 and user_id not in admins_id:
 
-        await message.answer('Unknown command\n'
-                             'Enter /help to get help')
+        await message.answer('Unknown command, enter /help')
 
     else:
 
-        await message.answer('Введи юзернейм')
+        await message.answer('Enter a username')
 
         await state.set_state(AdminState.waiting_for_unban_user)
+
+    return

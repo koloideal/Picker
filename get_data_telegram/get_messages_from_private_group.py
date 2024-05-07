@@ -1,28 +1,32 @@
 import re
 from configparser import ConfigParser
 import json
+from datetime import tzinfo
+from typing import Any
 from telethon.sync import TelegramClient
 from dateutil import tz
 import dateutil.parser
 from telethon.tl import functions
+from telethon.tl.types import Chat, User
 from telethon.errors.rpcerrorlist import UserAlreadyParticipantError, FloodWaitError
+from telethon.helpers import TotalList
 
 
 config: ConfigParser = ConfigParser()
 config.read("secret_data/config.ini")
 
 
-api_id = config['Telegram']['api_id']
-api_hash = config['Telegram']['api_hash']
+api_id: str = config['Telegram']['api_id']
+api_hash: str = config['Telegram']['api_hash']
 
 
-client = TelegramClient('session', int(api_id), api_hash)
+client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
 
-async def get_messages_from_private_group(link_hash, limit):
+async def get_messages_from_private_group(link_hash: str, limit: int) -> str | None:
 
-    url = link_hash
-    url_hash = link_hash.split('+')[1]
+    url: str = link_hash
+    url_hash: str = link_hash.split('+')[1]
 
     await client.start()
 
@@ -32,25 +36,21 @@ async def get_messages_from_private_group(link_hash, limit):
 
     except UserAlreadyParticipantError:
 
-        print('User is already participant')
-
         pass
 
     except FloodWaitError:
 
-        print('flood')
-
         return
 
-    entity = await client.get_entity(url)
+    entity: Chat = await client.get_entity(url)
 
-    messages = await client.get_messages(entity, limit=limit)
+    messages: TotalList | list = await client.get_messages(entity, limit=limit)
 
     await client.kick_participant(url, 'me')
 
-    messages = list(filter(lambda a: a.__class__.__name__ == 'Message', messages))
+    messages: list = list(filter(lambda a: a.__class__.__name__ == 'Message', messages))
 
-    users_id = []
+    users_id: list = []
 
     for x in messages:
 
@@ -62,43 +62,43 @@ async def get_messages_from_private_group(link_hash, limit):
 
             continue
 
-    all_need_users = []
+    all_need_users: list = []
 
     for ids in set(users_id):
 
-        user = await client.get_participants(ids)
+        user: TotalList = await client.get_participants(ids)
 
         all_need_users.append(user[0].to_dict())
 
-    dict_with_all_data = {}
+    dict_with_all_data: dict = {}
 
-    for user in all_need_users:
+    for us in all_need_users:
 
-        dict_with_all_data[user['id']] = {
+        dict_with_all_data[us['id']]: dict = {
 
-            'username': user['username'],
-            'first_name': user['first_name'],
-            'phone': user['phone']
+            'username': us['username'],
+            'first_name': us['first_name'],
+            'phone': us['phone']
 
         }
 
-    to_time_zone = tz.gettz('Europe/Minsk')
+    to_time_zone: tzinfo = tz.gettz('Europe/Minsk')
 
-    all_messages = []
+    all_messages: list = []
 
     for message in messages:
 
-        msg_to_dict = message.to_dict()
+        msg_to_dict: dict = message.to_dict()
 
-        date_time_iso = msg_to_dict['date'].isoformat()
-        date_time_obj = dateutil.parser.isoparse(date_time_iso)
-        date_time_obj = date_time_obj.astimezone(to_time_zone)
+        date_time_iso: Any = msg_to_dict['date'].isoformat()
+        date_time_obj: Any = dateutil.parser.isoparse(date_time_iso)
+        date_time_obj: Any = date_time_obj.astimezone(to_time_zone)
 
-        result_date = date_time_obj.strftime('%m-%d-%Y %H:%M:%S')
+        result_date: str = date_time_obj.strftime('%m-%d-%Y %H:%M:%S')
 
         try:
 
-            user_id = msg_to_dict['from_id']['user_id']
+            user_id: int = msg_to_dict['from_id']['user_id']
 
             if user_id in dict_with_all_data.keys():
 
@@ -114,9 +114,9 @@ async def get_messages_from_private_group(link_hash, limit):
 
             else:
 
-                user = await client.get_participants(message.from_id)
+                user: TotalList = await client.get_participants(message.from_id)
 
-                need_user = user[0]
+                need_user: User = user[0]
 
                 all_messages.append({
 
@@ -134,9 +134,9 @@ async def get_messages_from_private_group(link_hash, limit):
 
     await client.disconnect()
 
-    channel_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', entity.title)
+    channel_title: str = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', entity.title)
 
-    with open(f'messages_of_private_groups_to_json/{channel_title}.json', 'w', encoding='utf8') as file:
+    with open(f'content/{channel_title}.json', 'w', encoding='utf8') as file:
 
         json.dump({channel_title: all_messages}, file, indent=4, ensure_ascii=False)
 

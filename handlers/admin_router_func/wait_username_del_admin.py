@@ -5,24 +5,25 @@ from telethon.sync import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from database_func.del_admin import del_admin
 from database_func.get_admins import get_admins
+from telethon.helpers import TotalList
 
 
 config: ConfigParser = ConfigParser()
 config.read("secret_data/config.ini")
 
 
-api_id = config['Telegram']['api_id']
-api_hash = config['Telegram']['api_hash']
+api_id: str = config['Telegram']['api_id']
+api_hash: str = config['Telegram']['api_hash']
 
 
-client = TelegramClient('session', int(api_id), api_hash)
+client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
 
-async def get_username_for_del_admin_rout(message: types.Message, state: FSMContext):
+async def get_username_for_del_admin_rout(message: types.Message, state: FSMContext) -> None:
 
     try:
 
-        admin_id = await get_admins()
+        admin_id: list = await get_admins()
 
         await client.start()
 
@@ -30,12 +31,12 @@ async def get_username_for_del_admin_rout(message: types.Message, state: FSMCont
 
             raise ValueError
 
-        ex_admin_username = message.text if message.text[0] != '@' else message.text[1:]
+        ex_admin_username: str = message.text if message.text[0] != '@' else message.text[1:]
 
-        user = await client.get_participants(ex_admin_username)
+        user: TotalList = await client.get_participants(ex_admin_username)
 
-        user_id = user[0].id
-        user_username = user[0].username
+        user_id: int = user[0].id
+        user_username: str = user[0].username
 
         if len(user) != 1:
 
@@ -47,11 +48,11 @@ async def get_username_for_del_admin_rout(message: types.Message, state: FSMCont
 
     except (UsernameInvalidError, ValueError):
 
-        await message.answer('Некорректный юзернейм')
+        await message.answer('Invalid username')
 
     except TypeError:
 
-        await message.answer('Человек не является админом')
+        await message.answer('The person is not an admin')
 
     else:
 
@@ -67,3 +68,5 @@ async def get_username_for_del_admin_rout(message: types.Message, state: FSMCont
         await client.disconnect()
 
         await state.clear()
+
+    return

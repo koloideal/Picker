@@ -5,6 +5,7 @@ from get_data_telegram.get_posts_from_channel import get_posts_from_channel
 from aiogram.types import FSInputFile
 import os
 from handlers.router_func.wait_posts_channel_rout import CallbackForGetPosts
+from aiogram.types.message import Message
 
 
 async def second_step_to_get_posts(callback: types.CallbackQuery,
@@ -15,10 +16,10 @@ async def second_step_to_get_posts(callback: types.CallbackQuery,
 
         await callback.message.delete()
 
-        link = callback_data.link
-        limit = callback_data.limit
+        link: str = callback_data.link
+        limit: int = callback_data.limit
 
-        processed = await callback.message.answer('Processed...')
+        processed: Message = await callback.message.answer('Processed...')
 
         file_name: str = await get_posts_from_channel(link, limit)
 
@@ -26,7 +27,7 @@ async def second_step_to_get_posts(callback: types.CallbackQuery,
 
         logging.error(e)
 
-        await callback.message.answer('Некорректная ссылка')
+        await callback.message.answer('Invalid link')
 
     else:
 
@@ -44,4 +45,4 @@ async def second_step_to_get_posts(callback: types.CallbackQuery,
 
         await state.clear()
 
-        return None
+        return

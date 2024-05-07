@@ -6,8 +6,8 @@ import logging
 
 async def del_admin(message: types.Message, ex_admin: dict) -> None:
 
-    ex_admin_id = ex_admin["user_id"]
-    ex_admin_username = ex_admin["user_username"]
+    ex_admin_id: int = ex_admin["user_id"]
+    ex_admin_username: str = ex_admin["user_username"]
 
     connection: Connection = sqlite3.connect('database/admin_users.db')
     cursor: Cursor = connection.cursor()
@@ -19,6 +19,6 @@ async def del_admin(message: types.Message, ex_admin: dict) -> None:
     cursor.close()
     connection.close()
 
-    logging.warning(f'Юзер @{ex_admin_username} теперь не админ')
+    logging.warning(f'User @{ex_admin_username}  is no longer an admin')
 
-    await message.answer(f'@{ex_admin_username} теперь не админ')
+    await message.answer(f'@{ex_admin_username}  is no longer an admin')

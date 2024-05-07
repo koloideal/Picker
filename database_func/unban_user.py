@@ -7,14 +7,14 @@ from database_func.get_banned_users import get_banned_users
 
 async def unban_user(message: types.Message, ex_ban_user: dict) -> None:
 
-    banned_users = await get_banned_users()
+    banned_users: list = await get_banned_users()
 
-    user_username = ex_ban_user['user_username']
-    user_id = ex_ban_user['user_id']
+    user_username: str = ex_ban_user['user_username']
+    user_id: int = ex_ban_user['user_id']
 
     if user_id not in banned_users:
 
-        await message.answer(f'Юзер @{user_username} не был забанен')
+        await message.answer(f'User @{user_username} was not banned')
 
     else:
 
@@ -28,6 +28,6 @@ async def unban_user(message: types.Message, ex_ban_user: dict) -> None:
         cursor.close()
         connection.close()
 
-        logging.warning(f'Юзер @{user_username} разбанен')
+        logging.warning(f'User @{user_username} unbanned')
 
-        await message.answer(f'@{user_username} разбанен')
+        await message.answer(f'@{user_username} unbanned')

@@ -5,16 +5,15 @@ from datetime import datetime
 from aiogram.exceptions import TelegramBadRequest
 
 
-async def get_logs_rout(message: types.Message):
+async def get_logs_rout(message: types.Message) -> None:
 
-    user_id = message.from_user.id
+    user_id: int = message.from_user.id
 
-    admins_id = await get_admins()
+    admins_id: list = await get_admins()
 
     if user_id != 2047958833 and user_id not in admins_id:
 
-        await message.answer('Unknown command\n'
-                             'Enter /help to get help')
+        await message.answer('Unknown command, enter /help')
 
     else:
 
@@ -22,7 +21,7 @@ async def get_logs_rout(message: types.Message):
 
         document: FSInputFile = FSInputFile(full_file_name)
 
-        captions = f'before {datetime.now().strftime('%d-%m-%Y')}'
+        captions: str = f'before {datetime.now().strftime('%d-%m-%Y')}'
 
         try:
 
@@ -31,3 +30,5 @@ async def get_logs_rout(message: types.Message):
         except TelegramBadRequest:
 
             await message.answer('Logs are empty, enter /start and try again')
+
+    return

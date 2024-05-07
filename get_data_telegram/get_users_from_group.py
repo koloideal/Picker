@@ -5,6 +5,7 @@ from telethon.tl.types import Channel
 from aiogram.types import Message
 import json
 from telethon.errors.rpcerrorlist import ChatAdminRequiredError
+from telethon.helpers import TotalList
 
 config: ConfigParser = ConfigParser()
 
@@ -14,9 +15,10 @@ api_id: str = config.get('Telegram', 'api_id')
 api_hash: str = config.get('Telegram', 'api_hash')
 
 
-async def get_users_from_groups(message: Message):
+client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
-    client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
+
+async def get_users_from_groups(message: Message) -> str | None:
 
     await client.start()
 
@@ -24,13 +26,13 @@ async def get_users_from_groups(message: Message):
 
         channel: Channel = await client.get_entity(message.text)
 
-        all_users = await client.get_participants(message.text)
+        all_users: TotalList = await client.get_participants(message.text)
 
     except ChatAdminRequiredError:
 
         await client.disconnect()
 
-        await message.answer('Вы должны быть владельцем или админом данного канала')
+        await message.answer('You must be the owner or admin of this channel')
 
         return
 
@@ -38,15 +40,13 @@ async def get_users_from_groups(message: Message):
 
         await client.disconnect()
 
-        await message.answer('Некорректная ссылка')
+        await message.answer('Invalid link')
 
         return
 
     else:
 
         await client.disconnect()
-
-    channel_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
 
     all_users_details: list = []
 
@@ -63,7 +63,9 @@ async def get_users_from_groups(message: Message):
 
         })
 
-    with open(f'users_of_groups_to_json/{channel_title}.json', 'w', encoding='utf8') as file:
+    channel_title: str = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
+
+    with open(f'content/{channel_title}.json', 'w', encoding='utf8') as file:
 
         json.dump({channel_title: all_users_details}, file, indent=4, ensure_ascii=False)
 

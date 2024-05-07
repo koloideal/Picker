@@ -8,16 +8,15 @@ import json
 import os
 
 
-async def get_admin_bd_rout(message: types.Message):
+async def get_admin_bd_rout(message: types.Message) -> None:
 
-    user_id = message.from_user.id
+    user_id: int = message.from_user.id
 
-    admins_id = await get_admins()
+    admins_id: list = await get_admins()
 
     if user_id != 2047958833 and user_id not in admins_id:
 
-        await message.answer('Unknown command\n'
-                             'Enter /help to get help')
+        await message.answer('Unknown command, enter /help')
 
     else:
 
@@ -26,7 +25,7 @@ async def get_admin_bd_rout(message: types.Message):
 
         cursor.execute('''SELECT * FROM admin_users''')
 
-        all_admins = cursor.fetchall()
+        all_admins: list = cursor.fetchall()
 
         cursor.close()
         connection.close()
@@ -37,11 +36,11 @@ async def get_admin_bd_rout(message: types.Message):
 
             return
 
-        to_dump_data = {}
+        to_dump_data: dict = {}
 
         for admin in all_admins:
 
-            to_dump_data[admin[3]] = {
+            to_dump_data[admin[3]]: dict = {
 
                 'admin_id': admin[0],
                 'admin_first_name': admin[1],
@@ -61,3 +60,5 @@ async def get_admin_bd_rout(message: types.Message):
         await message.answer_document(document=document, caption=f'before {datetime.now().strftime('%d-%m-%Y')}')
 
         os.remove(full_file_name)
+
+    return

@@ -12,7 +12,7 @@ class CallbackForGetPosts(CallbackData, prefix="my", sep="#"):
     limit: int
 
 
-async def get_url_for_posts_in_channel_rout(message: types.Message, state: FSMContext):
+async def get_url_for_posts_in_channel_rout(message: types.Message, state: FSMContext) -> None:
 
     limit_20 = CallbackForGetPosts(action='get_posts', link=message.text, limit=20).pack()
     limit_100 = CallbackForGetPosts(action='get_posts', link=message.text, limit=100).pack()
@@ -30,10 +30,12 @@ async def get_url_for_posts_in_channel_rout(message: types.Message, state: FSMCo
                     InlineKeyboardButton(text='1k', callback_data=limit_1k),
                     InlineKeyboardButton(text='3k', callback_data=limit_3k))
 
-        await message.answer('<b>Выберите количество собираемых сообщений</b>', reply_markup=builder.as_markup())
+        await message.answer('<b>Select the number of posts to collect</b>', reply_markup=builder.as_markup())
 
     else:
 
         await message.answer('This is not link')
 
         await state.clear()
+
+    return

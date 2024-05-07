@@ -2,14 +2,13 @@ from aiogram import types
 import os
 
 
-async def drop_data_rout(message: types.Message):
+async def drop_data_rout(message: types.Message) -> None:
 
-    user_id = message.from_user.id
+    user_id: int = message.from_user.id
 
     if user_id != 2047958833:
 
-        await message.answer('Unknown command\n'
-                             'Enter /help to get help')
+        await message.answer('Unknown command, enter /help')
 
     else:
 
@@ -28,3 +27,5 @@ async def drop_data_rout(message: types.Message):
         finally:
 
             await message.answer('<i>I hope everything is fine</i>')
+
+    return

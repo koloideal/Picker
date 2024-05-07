@@ -29,4 +29,4 @@ async def user_to_database(message: types.Message) -> None:
     cursor.close()
     connection.close()
 
-    logging.warning(f'Юзер @{user_username} добавлен в базу данных или уже существует в ней')
+    logging.warning(f'User @{user_username} has been added to the database or already exists in it')

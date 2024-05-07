@@ -9,16 +9,15 @@ import os
 from sqlite3 import OperationalError
 
 
-async def get_users_bd_rout(message: types.Message):
+async def get_users_bd_rout(message: types.Message) -> None:
 
-    user_id = message.from_user.id
+    user_id: int = message.from_user.id
 
-    admins_id = await get_admins()
+    admins_id: list = await get_admins()
 
     if user_id != 2047958833 and user_id not in admins_id:
 
-        await message.answer('Unknown command\n'
-                             'Enter /help to get help')
+        await message.answer('Unknown command, enter /help')
 
     else:
 
@@ -29,7 +28,7 @@ async def get_users_bd_rout(message: types.Message):
 
             cursor.execute('''SELECT * FROM users''')
 
-            all_users = cursor.fetchall()
+            all_users: list = cursor.fetchall()
 
         except OperationalError:
 
@@ -45,11 +44,11 @@ async def get_users_bd_rout(message: types.Message):
             cursor.close()
             connection.close()
 
-        to_dump_data = {}
+        to_dump_data: dict = {}
 
         for user in all_users:
 
-            to_dump_data[user[2]] = {
+            to_dump_data[user[2]]: dict = {
 
                 'user_id': user[0],
                 'user_first_name': user[1],
@@ -68,3 +67,5 @@ async def get_users_bd_rout(message: types.Message):
         await message.answer_document(document=document, caption=f'before {datetime.now().strftime('%d-%m-%Y')}')
 
         os.remove(full_file_name)
+
+    return

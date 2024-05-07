@@ -1,10 +1,11 @@
 import re
 from configparser import ConfigParser
 from telethon.sync import TelegramClient
-from telethon import functions
 from aiogram.types import Message
 import json
 from telethon.errors.rpcerrorlist import InviteHashExpiredError, InviteHashEmptyError
+from telethon.tl.functions.messages import CheckChatInviteRequest
+from telethon.tl.types import ChatInvite
 
 config: ConfigParser = ConfigParser()
 
@@ -14,33 +15,32 @@ api_id: str = config.get('Telegram', 'api_id')
 api_hash: str = config.get('Telegram', 'api_hash')
 
 
-async def get_users_from_private_groups(message: Message):
+client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
-    client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
+
+async def get_users_from_private_groups(message: Message) -> str | None:
 
     await client.start()
 
     try:
 
-        link = message.text.split('+')[1]
+        link: str = message.text.split('+')[1]
 
-        channel = await client(functions.messages.CheckChatInviteRequest(hash=link))
+        channel: ChatInvite | None = await client(CheckChatInviteRequest(hash=link))
 
-        users = [user.__dict__ for user in channel.participants]
+        users: list = [user.__dict__ for user in channel.participants]
 
     except (InviteHashExpiredError, InviteHashEmptyError):
 
         await client.disconnect()
 
-        await message.answer('Некорректная ссылка')
+        await message.answer('Invalid link')
 
         return
 
     else:
 
         await client.disconnect()
-
-    private_group_title = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
 
     all_users_details: list = []
 
@@ -57,7 +57,9 @@ async def get_users_from_private_groups(message: Message):
 
         })
 
-    with open(f'users_of_private_groups_to_json/{private_group_title}.json', 'w', encoding='utf8') as file:
+    private_group_title: str = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
+
+    with open(f'content/{private_group_title}.json', 'w', encoding='utf8') as file:
 
         json.dump({private_group_title: all_users_details}, file, indent=4, ensure_ascii=False)
 

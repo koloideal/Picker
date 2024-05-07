@@ -6,20 +6,21 @@ from telethon.errors.rpcerrorlist import UsernameInvalidError
 from database_func.ban_user import ban_user
 from database_func.get_admins import get_admins
 from database_func.del_admin import del_admin
+from telethon.helpers import TotalList
 
 
 config: ConfigParser = ConfigParser()
 config.read("secret_data/config.ini")
 
 
-api_id = config['Telegram']['api_id']
-api_hash = config['Telegram']['api_hash']
+api_id: str = config['Telegram']['api_id']
+api_hash: str = config['Telegram']['api_hash']
 
 
-client = TelegramClient('session', int(api_id), api_hash)
+client: TelegramClient = TelegramClient('session', int(api_id), api_hash)
 
 
-async def get_username_for_ban_user_rout(message: types.Message, state: FSMContext):
+async def get_username_for_ban_user_rout(message: types.Message, state: FSMContext) -> None:
 
     try:
 
@@ -29,16 +30,16 @@ async def get_username_for_ban_user_rout(message: types.Message, state: FSMConte
 
             raise ValueError
 
-        future_ban_user_username = message.text if message.text[0] != '@' else message.text[1:]
+        future_ban_user_username: str = message.text if message.text[0] != '@' else message.text[1:]
 
-        user = await client.get_participants(future_ban_user_username)
+        user: TotalList = await client.get_participants(future_ban_user_username)
 
-        user_id = user[0].id
-        user_username = user[0].username
-        user_first_name = user[0].first_name
-        user_last_name = user[0].last_name
+        user_id: int = user[0].id
+        user_username: str = user[0].username
+        user_first_name: str = user[0].first_name
+        user_last_name: str = user[0].last_name
 
-        admins_id = await get_admins()
+        admins_id: list = await get_admins()
 
         if ((user_id in admins_id) or (user_id == 2047958833)) and message.from_user.id != 2047958833:
 
@@ -50,11 +51,11 @@ async def get_username_for_ban_user_rout(message: types.Message, state: FSMConte
 
     except (UsernameInvalidError, ValueError):
 
-        await message.answer('Некорректный юзернейм')
+        await message.answer('Invalid username')
 
     except TypeError:
 
-        await message.answer('Ты не можешь забанить админа или Создателя')
+        await message.answer('You can\'t ban the admin or the Creator')
 
     else:
 
@@ -81,3 +82,5 @@ async def get_username_for_ban_user_rout(message: types.Message, state: FSMConte
         await client.disconnect()
 
         await state.clear()
+
+    return
