@@ -6,6 +6,9 @@ from aiogram.types import Message
 import json
 from telethon.errors.rpcerrorlist import ChatAdminRequiredError
 from telethon.helpers import TotalList
+import os
+
+os.makedirs('secret_data', exist_ok=True)
 
 config: ConfigParser = ConfigParser()
 

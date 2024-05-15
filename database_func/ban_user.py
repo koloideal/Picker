@@ -32,6 +32,6 @@ async def ban_user(message: types.Message, future_ban_user: dict) -> None:
     cursor.close()
     connection.close()
 
-    logging.warning(f'Юзер @{user_username} is now an admin or already was')
+    logging.warning(f'User @{user_username} is banned')
 
-    await message.answer(f'@{user_username} is now an admin or already was')
+    await message.answer(f'@{user_username} is banned')

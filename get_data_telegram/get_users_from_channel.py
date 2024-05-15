@@ -43,9 +43,7 @@ async def get_users_from_channel(message: Message) -> str | None:
 
         return
 
-    else:
-
-        await client.disconnect()
+    await client.disconnect()
 
     result: list = []
 

@@ -32,7 +32,7 @@ async def second_step_to_get_messages_private(callback: types.CallbackQuery,
 
         if file_name:
 
-            full_file_name: str = f'messages_of_private_groups_to_json/{file_name}.json'
+            full_file_name: str = f'content/{file_name}.json'
 
             document: FSInputFile = FSInputFile(full_file_name)
 

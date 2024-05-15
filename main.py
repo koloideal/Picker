@@ -1,18 +1,24 @@
+import os
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from configparser import ConfigParser
 from aiogram import Bot, Dispatcher
-from handlers.routers import router
+from telethon import TelegramClient
 import asyncio
 import logging
-import os
-
 
 config: ConfigParser = ConfigParser()
 config.read('secret_data/config.ini')
 
 bot_token: str = config.get('Telegram', 'bot_token')
+api_id: int = int(config['Telegram']['api_id'])
+api_hash: str = config['Telegram']['api_hash']
+
+
+client: TelegramClient = TelegramClient('session', api_id, api_hash)
+client.start()
+client.disconnect()
 
 storage: MemoryStorage = MemoryStorage()
 
@@ -25,8 +31,9 @@ os.makedirs('database', exist_ok=True)
 
 async def main() -> None:
 
-    logging.warning('Starting bot...')
+    from handlers.routers import router
 
+    logging.warning('Starting bot...')
     dp.include_router(router)
 
     await bot.delete_webhook(drop_pending_updates=True)

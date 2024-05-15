@@ -3,11 +3,10 @@ from configparser import ConfigParser
 import json
 from datetime import tzinfo
 from typing import Any
-
 from telethon.sync import TelegramClient
 from dateutil import tz
 import dateutil.parser
-from telethon.tl.types import Channel, User
+from telethon.tl.types import Channel
 from telethon.helpers import TotalList
 
 
@@ -29,6 +28,8 @@ async def get_posts_from_channel(url: str, limit: int) -> str:
     channel: Channel = await client.get_entity(url)
 
     messages: TotalList = await client.get_messages(channel, limit=limit)
+
+    await client.disconnect()
 
     result_list: list = []
 

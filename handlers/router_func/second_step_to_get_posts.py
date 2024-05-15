@@ -31,7 +31,7 @@ async def second_step_to_get_posts(callback: types.CallbackQuery,
 
     else:
 
-        full_file_name: str = f'posts_of_channel_to_json/{file_name}.json'
+        full_file_name: str = f'content/{file_name}.json'
 
         document: FSInputFile = FSInputFile(full_file_name)
 
