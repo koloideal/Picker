@@ -49,6 +49,8 @@ async def get_messages_from_group(url: str, limit: int) -> str:
 
         all_need_users.append(user[0].to_dict())
 
+    await client.disconnect()
+
     dict_with_all_data: dict = {}
 
     for need_user in all_need_users:
@@ -92,8 +94,6 @@ async def get_messages_from_group(url: str, limit: int) -> str:
         except KeyError:
 
             continue
-
-    await client.disconnect()
 
     channel_title: str = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '_', channel.title)
 

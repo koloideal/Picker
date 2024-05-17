@@ -4,7 +4,7 @@ from telethon.sync import TelegramClient
 from telethon.tl.types import Channel
 from aiogram.types import Message
 import json
-from telethon.errors.rpcerrorlist import ChatAdminRequiredError
+from telethon.errors.rpcerrorlist import ChatAdminRequiredError, ChannelPrivateError
 from telethon.helpers import TotalList
 import os
 
@@ -36,6 +36,14 @@ async def get_users_from_groups(message: Message) -> str | None:
         await client.disconnect()
 
         await message.answer('You must be the owner or admin of this channel')
+
+        return
+
+    except ChannelPrivateError:
+
+        await client.disconnect()
+
+        await message.answer('The information collector has been banned from this group')
 
         return
 

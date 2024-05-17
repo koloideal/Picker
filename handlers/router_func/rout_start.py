@@ -2,6 +2,13 @@ from aiogram import types
 from database_func.user_to_database import user_to_database
 from database_func.get_admins import get_admins
 from database_func.get_banned_users import get_banned_users
+from configparser import ConfigParser
+
+
+config = ConfigParser()
+config.read('secret_data/config.ini')
+
+creator_id: int = int(config['Telegram']['creator_id'])
 
 
 async def start_rout(message: types.Message) -> None:
@@ -12,9 +19,9 @@ async def start_rout(message: types.Message) -> None:
 
     banned_users_id: list = await get_banned_users()
 
-    case1: bool = user_id in admins_id and user_id == 2047958833
-    case2: bool = user_id not in admins_id and user_id == 2047958833
-    case3: bool = user_id in admins_id and user_id != 2047958833
+    case1: bool = user_id in admins_id and user_id == creator_id
+    case2: bool = user_id not in admins_id and user_id == creator_id
+    case3: bool = user_id in admins_id and user_id != creator_id
     case4: bool = user_id in banned_users_id
     case5: bool = user_id not in banned_users_id
 

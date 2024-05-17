@@ -2,6 +2,7 @@ from aiogram.types import Message
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.state import StatesGroup, State
 from database_func.get_banned_users import get_banned_users
+from handlers.router_func.rout_start import creator_id
 
 
 class SearchState(StatesGroup):
@@ -26,7 +27,7 @@ async def button_to_search_rout(message: Message) -> None:
 
     banned_users: list = await get_banned_users()
 
-    if (user_id in banned_users) and (user_id != 2047958833):
+    if (user_id in banned_users) and (user_id != creator_id):
 
         await message.answer(f"You can't use the bot."
                              f"\n\n<u><b>You were blocked</b></u>"

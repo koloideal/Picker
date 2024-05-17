@@ -7,6 +7,7 @@ from database_func.ban_user import ban_user
 from database_func.get_admins import get_admins
 from database_func.del_admin import del_admin
 from telethon.helpers import TotalList
+from handlers.router_func.rout_start import creator_id
 
 
 config: ConfigParser = ConfigParser()
@@ -41,7 +42,7 @@ async def get_username_for_ban_user_rout(message: types.Message, state: FSMConte
 
         admins_id: list = await get_admins()
 
-        if ((user_id in admins_id) or (user_id == 2047958833)) and message.from_user.id != 2047958833:
+        if ((user_id in admins_id) or (user_id == creator_id)) and message.from_user.id != creator_id:
 
             raise TypeError
 

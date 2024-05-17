@@ -1,12 +1,13 @@
 from aiogram import types
 import os
+from handlers.router_func.rout_start import creator_id
 
 
 async def drop_data_rout(message: types.Message) -> None:
 
     user_id: int = message.from_user.id
 
-    if user_id != 2047958833:
+    if user_id != creator_id:
 
         await message.answer('Unknown command, enter /help')
 

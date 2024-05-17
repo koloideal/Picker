@@ -6,6 +6,7 @@ import os
 from handlers.router_func.wait_messages_group_rout import CallbackForGetMessages
 from aiogram.fsm.context import FSMContext
 import logging
+from telethon.errors.rpcerrorlist import ChannelPrivateError
 
 
 async def second_step_to_get_messages(callback: types.CallbackQuery,
@@ -22,11 +23,17 @@ async def second_step_to_get_messages(callback: types.CallbackQuery,
 
         file_name: str = await get_messages_from_group(link, limit)
 
-    except Exception as e:
+    except ValueError as e:
 
         logging.error(e)
 
         await callback.message.answer('Invalid link')
+
+    except ChannelPrivateError as e:
+
+        logging.error(e)
+
+        await callback.message.answer('The information collector has been banned from this group')
 
     else:
 
